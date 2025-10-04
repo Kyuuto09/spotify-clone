@@ -1,0 +1,15 @@
+C:\Users\yuki\Desktop\csharp\spr421_spotify_clone_api_react\spr421_spotify_clone.DAL\bin\Debug\net8.0\spr421_spotify_clone.DAL.deps.json
+C:\Users\yuki\Desktop\csharp\spr421_spotify_clone_api_react\spr421_spotify_clone.DAL\bin\Debug\net8.0\spr421_spotify_clone.DAL.runtimeconfig.json
+C:\Users\yuki\Desktop\csharp\spr421_spotify_clone_api_react\spr421_spotify_clone.DAL\bin\Debug\net8.0\spr421_spotify_clone.DAL.dll
+C:\Users\yuki\Desktop\csharp\spr421_spotify_clone_api_react\spr421_spotify_clone.DAL\bin\Debug\net8.0\spr421_spotify_clone.DAL.pdb
+C:\Users\yuki\Desktop\csharp\spr421_spotify_clone_api_react\spr421_spotify_clone.DAL\obj\Debug\net8.0\spr421_spotify_clone.DAL.csproj.AssemblyReference.cache
+C:\Users\yuki\Desktop\csharp\spr421_spotify_clone_api_react\spr421_spotify_clone.DAL\obj\Debug\net8.0\spr421_spotify_clone.DAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yuki\Desktop\csharp\spr421_spotify_clone_api_react\spr421_spotify_clone.DAL\obj\Debug\net8.0\spr421_spotify_clone.DAL.AssemblyInfoInputs.cache
+C:\Users\yuki\Desktop\csharp\spr421_spotify_clone_api_react\spr421_spotify_clone.DAL\obj\Debug\net8.0\spr421_spotify_clone.DAL.AssemblyInfo.cs
+C:\Users\yuki\Desktop\csharp\spr421_spotify_clone_api_react\spr421_spotify_clone.DAL\obj\Debug\net8.0\spr421_spotify_clone.DAL.csproj.CoreCompileInputs.cache
+C:\Users\yuki\Desktop\csharp\spr421_spotify_clone_api_react\spr421_spotify_clone.DAL\obj\Debug\net8.0\spr421_spotify_clone.DAL.sourcelink.json
+C:\Users\yuki\Desktop\csharp\spr421_spotify_clone_api_react\spr421_spotify_clone.DAL\obj\Debug\net8.0\spr421_spotify_clone.DAL.dll
+C:\Users\yuki\Desktop\csharp\spr421_spotify_clone_api_react\spr421_spotify_clone.DAL\obj\Debug\net8.0\refint\spr421_spotify_clone.DAL.dll
+C:\Users\yuki\Desktop\csharp\spr421_spotify_clone_api_react\spr421_spotify_clone.DAL\obj\Debug\net8.0\spr421_spotify_clone.DAL.pdb
+C:\Users\yuki\Desktop\csharp\spr421_spotify_clone_api_react\spr421_spotify_clone.DAL\obj\Debug\net8.0\spr421_spotify_clone.DAL.genruntimeconfig.cache
+C:\Users\yuki\Desktop\csharp\spr421_spotify_clone_api_react\spr421_spotify_clone.DAL\obj\Debug\net8.0\ref\spr421_spotify_clone.DAL.dll
