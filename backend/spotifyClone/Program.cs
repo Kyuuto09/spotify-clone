@@ -3,6 +3,7 @@ using spotifyClone.DAL;
 using spotifyClone.DAL.Repositories.Genre;
 using spotifyClone.DAL.Repositories.Artist;
 using spotifyClone.DAL.Repositories.Track;
+using spotifyClone.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
 builder.Services.AddScoped<ITrackRepository, TrackRepository>();
+
+// Add services
+builder.Services.AddScoped<ITrackService, TrackService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
