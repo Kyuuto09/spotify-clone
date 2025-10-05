@@ -1,0 +1,31 @@
+### Test User Registration
+POST http://localhost:5001/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "email": "john.smith@example.com",
+  "password": "SecurePassword123!",
+  "confirmPassword": "SecurePassword123!",
+  "birthDate": "1995-03-15"
+}
+
+###
+
+### Test User Login
+POST http://localhost:5001/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "john.smith@example.com",
+  "password": "SecurePassword123!"
+}
+
+###
+
+### Test Get Current User (need to get fresh token from registration/login)
+GET http://localhost:5001/api/auth/me
+Authorization: Bearer YOUR_JWT_TOKEN_FROM_REGISTRATION_OR_LOGIN
+
+###

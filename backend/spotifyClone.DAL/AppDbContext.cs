@@ -11,6 +11,8 @@ namespace spotifyClone.DAL
         public DbSet<ArtistEntity> Artists { get; set; }
         public DbSet<GenreEntity> Genres { get; set; }
         public DbSet<TrackEntity> Tracks { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
+        public DbSet<PlaylistEntity> Playlists { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -57,6 +59,44 @@ namespace spotifyClone.DAL
                 .HasMany(t => t.Artists)
                 .WithMany(a => a.Tracks)
                 .UsingEntity("ArtistTracks");
+
+            // UserEntity
+            builder.Entity<UserEntity>(e =>
+            {
+                e.HasKey(u => u.Id);
+                e.Property(u => u.Email)
+                .IsRequired()
+                .HasMaxLength(100);
+                e.HasIndex(u => u.Email).IsUnique();
+                e.Property(u => u.FirstName)
+                .IsRequired()
+                .HasMaxLength(50);
+                e.Property(u => u.LastName)
+                .IsRequired()
+                .HasMaxLength(50);
+            });
+
+            // PlaylistEntity
+            builder.Entity<PlaylistEntity>(e =>
+            {
+                e.HasKey(p => p.Id);
+                e.Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+            });
+
+            // User-Playlist relationship
+            builder.Entity<PlaylistEntity>()
+                .HasOne(p => p.User)
+                .WithMany(u => u.Playlists)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Playlist-Track relationship (many-to-many)
+            builder.Entity<PlaylistEntity>()
+                .HasMany(p => p.Tracks)
+                .WithMany()
+                .UsingEntity("PlaylistTracks");
         }
     }
 }
