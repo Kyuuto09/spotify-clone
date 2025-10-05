@@ -1,26 +1,103 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Tailwind v4 Theme Configuration */
+@theme {
+  --spacing-18: 4.5rem;
+  
+  --animate-fade-in: fade-in 0.3s ease-out;
+  --animate-zoom-in-95: zoom-in-95 0.3s ease-out;
+  --animate-slide-in-from-bottom-4: slide-in-from-bottom-4 0.3s ease-out;
 }
 
-@theme inline {
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+  --accent-green: #1db954;
+  --gray-light: #b3b3b3;
+  --gray-dark: #121212;
+}
+
+/* Tailwind CSS custom properties */
+.theme-vars {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #121212;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #404040;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #606060;
+}
+
+/* Focus styles */
+*:focus {
+  outline: 2px solid var(--accent-green);
+  outline-offset: 2px;
+}
+
+/* Disable autocomplete styling */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px black inset !important;
+  -webkit-text-fill-color: white !important;
+  caret-color: white !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Selection styles */
+::selection {
+  background: var(--accent-green);
+  color: white;
+}
+
+/* Navbar debugging */
+.navbar-debug nav {
+  border: 1px solid red;
+}
+
+.navbar-debug nav > * {
+  border: 1px solid blue;
 }
