@@ -37,10 +37,14 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
           localStorage.setItem('auth_token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
         }
+        
+        // Dispatch custom event to notify page of login
+        window.dispatchEvent(new Event('userLoggedIn'));
+        
         setTimeout(() => {
           onSuccess();
-          window.location.reload();
-        }, 1000);
+          // Don't reload - let the animation handle the transition
+        }, 500);
       } else {
         setMessage(data.message || 'Login failed. Please check your credentials.');
       }

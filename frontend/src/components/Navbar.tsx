@@ -15,16 +15,37 @@ export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
   const logoRef = useRef<HTMLAnchorElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Check if user is logged in
+  // Check if user is logged in (only on client side)
   useEffect(() => {
-    const token = localStorage.getItem('auth_token');
-    const userData = localStorage.getItem('user');
+    setIsMounted(true);
     
-    if (token && userData) {
-      setIsLoggedIn(true);
-      setUser(JSON.parse(userData));
-    }
+    const checkAuth = () => {
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('auth_token');
+        const userData = localStorage.getItem('user');
+        
+        if (token && userData) {
+          setIsLoggedIn(true);
+          setUser(JSON.parse(userData));
+        }
+      }
+    };
+    
+    // Check on mount
+    checkAuth();
+    
+    // Listen for login event
+    const handleLogin = () => {
+      checkAuth();
+    };
+    
+    window.addEventListener('userLoggedIn', handleLogin);
+    
+    return () => {
+      window.removeEventListener('userLoggedIn', handleLogin);
+    };
   }, []);
 
   // Logout function
@@ -201,7 +222,44 @@ export default function Navbar() {
             }}
             style={{ display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', flexShrink: 0 }} 
           >
-            {isLoggedIn ? (
+            {!isMounted ? (
+              /* Placeholder during SSR to prevent hydration mismatch */
+              <>
+            <button
+              className="font-medium"
+              style={{ 
+                fontSize: '15px',
+                padding: '10px 24px',
+                background: 'transparent',
+                color: 'rgba(255,255,255,0.8)',
+                border: 'none',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                borderRadius: '4px',
+                visibility: 'hidden'
+              }}
+            >
+              Log in
+            </button>
+            <button
+              className="font-semibold"
+              style={{ 
+                fontSize: '15px',
+                padding: '12px 28px',
+                background: 'white',
+                color: 'black',
+                border: 'none',
+                borderRadius: '500px',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                visibility: 'hidden'
+              }}
+            >
+              Sign up
+            </button>
+            </>
+            ) : isLoggedIn ? (
               /* User Menu */
               <button
                 onClick={() => toggleDropdown('user')}
