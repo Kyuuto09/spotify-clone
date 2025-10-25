@@ -2,10 +2,10 @@
 nixPkgs = ["dotnet-sdk_8"]
 
 [phases.build]
-cmds = ["dotnet publish -c Release -o out"]
+cmds = ["cd spotifyClone && dotnet publish -c Release -o out"]
 
 [phases.start]
-cmd = "cd out && dotnet spotifyClone.dll"
+cmd = "cd spotifyClone/out && dotnet spotifyClone.dll"
 
 [variables]
 ASPNETCORE_ENVIRONMENT = "Production"
