@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import confetti from 'canvas-confetti';
+import { apiConfig } from '@/config/api';
 import styles from './auth.module.css';
 
 interface SignupFormProps {
@@ -46,10 +47,10 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
       };
 
       console.log('Sending registration request...');
-      console.log('URL:', 'http://localhost:5001/api/auth/register');
+      console.log('URL:', apiConfig.endpoints.register);
       console.log('Data:', requestData);
 
-      const response = await fetch('http://localhost:5001/api/auth/register', {
+      const response = await fetch(apiConfig.endpoints.register, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

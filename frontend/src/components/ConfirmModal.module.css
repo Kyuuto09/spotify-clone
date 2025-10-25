@@ -1,0 +1,315 @@
+/* Overlay with backdrop blur */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 20px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Card with glass morphism effect */
+.modalContent {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95) 0%, rgba(20, 20, 20, 0.98) 100%);
+  border-radius: 24px;
+  padding: 0;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 1px rgba(255, 255, 255, 0.1) inset;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  animation: modalAppear 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+  position: relative;
+}
+
+.modalContent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.1), 
+    transparent
+  );
+}
+
+@keyframes modalAppear {
+  from {
+    transform: scale(0.9) translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Icon Container */
+.iconContainer {
+  display: flex;
+  justify-content: center;
+  padding: 32px 32px 24px 32px;
+  position: relative;
+}
+
+.iconCircle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(226, 33, 52, 0.15) 0%, rgba(226, 33, 52, 0.05) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+.iconCircle::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(226, 33, 52, 0.4), rgba(226, 33, 52, 0.1));
+  z-index: -1;
+  animation: rotate 3s linear infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.iconSvg {
+  width: 32px;
+  height: 32px;
+  color: #e22134;
+  animation: iconBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s backwards;
+}
+
+@keyframes iconBounce {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Content Wrapper */
+.contentWrapper {
+  padding: 0 32px 32px 32px;
+  text-align: center;
+}
+
+.modalTitle {
+  margin: 0 0 12px 0;
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s backwards;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modalMessage {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: #a0a0a0;
+  animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s backwards;
+}
+
+/* Actions Container */
+.modalActions {
+  display: flex;
+  gap: 12px;
+  padding: 24px 32px 32px 32px;
+  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.modalButton {
+  flex: 1;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  animation: buttonSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s backwards;
+}
+
+@keyframes buttonSlideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modalButton span {
+  position: relative;
+  z-index: 1;
+}
+
+.modalButton::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+  z-index: 0;
+}
+
+/* Cancel Button */
+.cancelButton {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.cancelButton::before {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.cancelButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.cancelButton:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Confirm Button (Danger) */
+.confirmButton {
+  background: linear-gradient(135deg, #e22134 0%, #c91a2b 100%);
+  color: white;
+  border: 1px solid rgba(226, 33, 52, 0.3);
+  box-shadow: 0 4px 16px rgba(226, 33, 52, 0.3);
+}
+
+.confirmButton::before {
+  background: linear-gradient(135deg, #ff2d42 0%, #e22134 100%);
+}
+
+.confirmButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 24px rgba(226, 33, 52, 0.4),
+    0 0 40px rgba(226, 33, 52, 0.2);
+  border-color: rgba(226, 33, 52, 0.5);
+}
+
+.confirmButton:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.modalButton:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .modalContent {
+    max-width: 100%;
+    margin: 0 16px;
+  }
+
+  .iconContainer {
+    padding: 24px 24px 20px 24px;
+  }
+
+  .iconCircle {
+    width: 56px;
+    height: 56px;
+  }
+
+  .iconSvg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .contentWrapper {
+    padding: 0 24px 24px 24px;
+  }
+
+  .modalTitle {
+    font-size: 1.375rem;
+  }
+
+  .modalMessage {
+    font-size: 0.875rem;
+  }
+
+  .modalActions {
+    padding: 20px 24px 24px 24px;
+    flex-direction: column;
+  }
+
+  .modalButton {
+    padding: 12px 20px;
+  }
+}

@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import confetti from 'canvas-confetti';
+import { apiConfig } from '@/config/api';
 import styles from './auth.module.css';
 
 interface LoginFormProps {
@@ -24,7 +25,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
     setMessage('');
 
     try {
-      const response = await fetch('http://localhost:5001/api/auth/login', {
+      const response = await fetch(apiConfig.endpoints.login, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

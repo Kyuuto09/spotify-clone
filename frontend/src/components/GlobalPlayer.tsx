@@ -1,6 +1,7 @@
 'use client';
 
 import { useAudioPlayer } from '@/contexts/AudioPlayerContext';
+import { apiConfig } from '@/config/api';
 import styles from './GlobalPlayer.module.css';
 
 export default function GlobalPlayer() {
@@ -67,9 +68,7 @@ export default function GlobalPlayer() {
             className={styles.cover}
             style={{
               backgroundImage: currentTrack.posterUrl
-                ? `url(${currentTrack.posterUrl.startsWith('http')
-                    ? currentTrack.posterUrl
-                    : `http://localhost:5001${currentTrack.posterUrl}`})`
+                ? `url(${apiConfig.getMediaURL(currentTrack.posterUrl)})`
                 : 'none',
             }}
           >

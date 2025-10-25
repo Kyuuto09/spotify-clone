@@ -3,25 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useAudioPlayer } from '@/contexts/AudioPlayerContext';
 import ConfirmModal from '@/components/ConfirmModal';
+import InfoModal from '@/components/InfoModal';
+import { apiConfig } from '@/config/api';
 import styles from './tracks.module.css';
-
-interface Track {
-  id: string;
-  title: string;
-  audioUrl: string;
-  posterUrl?: string;
-  description?: string;
-  releaseDate: string;
-  genre?: {
-    id: string;
-    name: string;
-  };
-  artists?: Array<{
-    id: string;
-    name: string;
-    imageUrl?: string;
-  }>;
-}
 
 export default function TracksPage() {
   const [loading, setLoading] = useState(true);
@@ -30,6 +14,10 @@ export default function TracksPage() {
     isOpen: false,
     trackId: null,
     trackTitle: ''
+  });
+  const [infoModal, setInfoModal] = useState<{ isOpen: boolean; trackId: string }>({
+    isOpen: false,
+    trackId: ''
   });
   
   const {
@@ -44,7 +32,7 @@ export default function TracksPage() {
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-        const response = await fetch('http://localhost:5001/api/track');
+        const response = await fetch(apiConfig.endpoints.tracks);
         if (!response.ok) {
           throw new Error('Failed to fetch tracks');
         }
@@ -70,7 +58,7 @@ export default function TracksPage() {
     if (!deleteModal.trackId) return;
 
     try {
-      const response = await fetch(`http://localhost:5001/api/track/${deleteModal.trackId}`, {
+      const response = await fetch(apiConfig.endpoints.track(deleteModal.trackId), {
         method: 'DELETE',
       });
 
@@ -93,8 +81,11 @@ export default function TracksPage() {
 
   const handleEdit = (trackId: string, event: React.MouseEvent) => {
     event.stopPropagation();
-    // TODO: Navigate to edit page or open edit modal
-    alert(`Edit functionality coming soon for track: ${trackId}`);
+    setInfoModal({ isOpen: true, trackId });
+  };
+
+  const closeInfoModal = () => {
+    setInfoModal({ isOpen: false, trackId: '' });
   };
 
   if (loading) {
@@ -163,9 +154,7 @@ export default function TracksPage() {
                       className={styles.albumArt}
                       style={{
                         backgroundImage: track.posterUrl 
-                          ? `url(${track.posterUrl.startsWith('http') 
-                              ? track.posterUrl 
-                              : `http://localhost:5001${track.posterUrl}`})`
+                          ? `url(${apiConfig.getMediaURL(track.posterUrl)})`
                           : 'none',
                         backgroundColor: track.posterUrl ? 'transparent' : 'var(--card-background)'
                       }}
@@ -187,10 +176,9 @@ export default function TracksPage() {
                     {track.artists && track.artists.length > 0 && (
                       <div className={styles.artistInfo}>
                         {track.artists[0].imageUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
                           <img 
-                            src={track.artists[0].imageUrl.startsWith('http') 
-                              ? track.artists[0].imageUrl 
-                              : `http://localhost:5001${track.artists[0].imageUrl}`}
+                            src={apiConfig.getMediaURL(track.artists[0].imageUrl)}
                             alt={track.artists[0].name}
                             className={styles.artistImage}
                           />
@@ -223,6 +211,26 @@ export default function TracksPage() {
         onCancel={cancelDelete}
         confirmText="Delete"
         cancelText="Cancel"
+      />
+
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        title="Feature In Development"
+        message={
+          <>
+            This feature is currently in development. Stay tuned for{' '}
+            <a 
+              href="https://github.com/Kyuuto09/spotify-clone" 
+              target="_blank" 
+              rel="noopener noreferrer"
+            >
+              updates
+            </a>
+            !
+          </>
+        }
+        onClose={closeInfoModal}
+        closeText="Got it"
       />
     </main>
   );

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import confetti from 'canvas-confetti';
+import ConfirmModal from '@/components/ConfirmModal';
+import { apiConfig } from '@/config/api';
 import styles from './genres.module.css';
 
 interface Genre {
@@ -16,6 +18,11 @@ export default function GenresPage() {
   const [error, setError] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingGenre, setEditingGenre] = useState<Genre | null>(null);
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; genreId: string | null; genreName: string }>({
+    isOpen: false,
+    genreId: null,
+    genreName: ''
+  });
   const [formData, setFormData] = useState({
     name: ''
   });
@@ -26,15 +33,15 @@ export default function GenresPage() {
 
   const fetchGenres = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/genre');
+      const response = await fetch(apiConfig.endpoints.genres);
       if (!response.ok) {
         throw new Error('Failed to fetch genres');
       }
       const data = await response.json();
       setGenres(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load genres');
-      console.error('Error fetching genres:', err);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Failed to load genres');
+      console.error('Error fetching genres:', error);
     } finally {
       setLoading(false);
     }
@@ -44,7 +51,7 @@ export default function GenresPage() {
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5001/api/genre', {
+      const response = await fetch(apiConfig.endpoints.genres, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: formData.name })
@@ -67,7 +74,7 @@ export default function GenresPage() {
         const errorData = await response.text();
         setError(errorData || 'Failed to add genre');
       }
-    } catch (err) {
+    } catch {
       setError('Network error. Please check backend connection.');
     }
   };
@@ -78,7 +85,7 @@ export default function GenresPage() {
     if (!editingGenre) return;
 
     try {
-      const response = await fetch(`http://localhost:5001/api/genre/${editingGenre.id}`, {
+      const response = await fetch(apiConfig.endpoints.genre(editingGenre.id), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: formData.name })
@@ -101,29 +108,42 @@ export default function GenresPage() {
         const errorData = await response.text();
         setError(errorData || 'Failed to update genre');
       }
-    } catch (err) {
+    } catch {
       setError('Network error. Please check backend connection.');
     }
   };
 
-  // Delete genre
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete "${name}" genre?`)) return;
+  // Delete genre - open confirmation modal
+  const handleDelete = (id: string, name: string) => {
+    setDeleteModal({ isOpen: true, genreId: id, genreName: name });
+  };
+
+  // Confirm delete
+  const confirmDelete = async () => {
+    if (!deleteModal.genreId) return;
 
     try {
-      const response = await fetch(`http://localhost:5001/api/genre/${id}`, {
+      const response = await fetch(apiConfig.endpoints.genre(deleteModal.genreId), {
         method: 'DELETE'
       });
 
       if (response.ok || response.status === 204) {
         fetchGenres();
         setError('');
+        setDeleteModal({ isOpen: false, genreId: null, genreName: '' });
       } else {
         setError('Failed to delete genre');
+        setDeleteModal({ isOpen: false, genreId: null, genreName: '' });
       }
-    } catch (err) {
+    } catch {
       setError('Network error. Please check backend connection.');
+      setDeleteModal({ isOpen: false, genreId: null, genreName: '' });
     }
+  };
+
+  // Cancel delete
+  const cancelDelete = () => {
+    setDeleteModal({ isOpen: false, genreId: null, genreName: '' });
   };
 
   const openAddModal = () => {
@@ -241,6 +261,17 @@ export default function GenresPage() {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        title="Delete Genre"
+        message={`Are you sure you want to delete "${deleteModal.genreName}"? This action cannot be undone and may affect tracks using this genre.`}
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </main>
   );
 }
