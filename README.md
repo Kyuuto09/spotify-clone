@@ -1,8 +1,6 @@
 # 🎵 Spotify Clone - Full Stack Application
 
-A full-stack Spotify clone built with **C# .NET** backend and **Next.js** frontend, featuring user authentication, GSAP animations, and a modern UI.
-
-## � Showcase
+## Showcase
 
 ![Spotify Clone](img/git1.png)
 
@@ -16,13 +14,12 @@ A full-stack Spotify clone built with **C# .NET** backend and **Next.js** fronte
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white)
 ![.NET](https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
 </div>
 
 ---
 
-## �🚀 Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
 - **.NET 8.0 SDK** or higher
