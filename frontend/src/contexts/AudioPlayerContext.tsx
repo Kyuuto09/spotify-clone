@@ -92,6 +92,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
       audio.pause();
       audio.src = '';
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const playTrack = (track: Track) => {
