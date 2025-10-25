@@ -91,7 +91,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
         
         setTimeout(() => {
           onSuccess();
-          window.location.href = '/dashboard';
+          window.location.href = '/tracks';
         }, 1000);
       } else {
         setMessage(data.message || 'Login failed. Please check your credentials.');

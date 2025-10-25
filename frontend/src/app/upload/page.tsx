@@ -13,17 +13,22 @@ export default function UploadPage() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
+    artistName: '',
     genreId: '',
     releaseDate: '',
     audioFile: null as File | null,
     posterFile: null as File | null,
-    posterUrl: ''
+    posterUrl: '',
+    artistImageFile: null as File | null,
+    artistImageUrl: ''
   });
   
   const [genres, setGenres] = useState<Genre[]>([]);
+  const [genresLoading, setGenresLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
   const [posterMode, setPosterMode] = useState<'file' | 'url'>('file');
+  const [artistImageMode, setArtistImageMode] = useState<'file' | 'url'>('file');
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -32,6 +37,7 @@ export default function UploadPage() {
 
   const fetchGenres = async () => {
     try {
+      setGenresLoading(true);
       const response = await fetch('http://localhost:5001/api/genre');
       if (response.ok) {
         const data = await response.json();
@@ -39,6 +45,9 @@ export default function UploadPage() {
       }
     } catch (error) {
       console.error('Error fetching genres:', error);
+      setMessage({ text: 'Failed to load genres. Please check backend connection.', type: 'error' });
+    } finally {
+      setGenresLoading(false);
     }
   };
 
@@ -81,6 +90,18 @@ export default function UploadPage() {
         formDataToSend.append('posterFile', formData.posterFile);
       } else if (posterMode === 'url' && formData.posterUrl) {
         formDataToSend.append('posterUrl', formData.posterUrl);
+      }
+      
+      // Handle artist image - either file or URL
+      if (artistImageMode === 'file' && formData.artistImageFile) {
+        formDataToSend.append('artistImageFile', formData.artistImageFile);
+      } else if (artistImageMode === 'url' && formData.artistImageUrl) {
+        formDataToSend.append('artistImageUrl', formData.artistImageUrl);
+      }
+      
+      // Add artist name
+      if (formData.artistName) {
+        formDataToSend.append('artistName', formData.artistName);
       }
       
       if (formData.genreId) formDataToSend.append('genreId', formData.genreId);
@@ -165,11 +186,14 @@ export default function UploadPage() {
           setFormData({
             title: '',
             description: '',
+            artistName: '',
             genreId: '',
             releaseDate: '',
             audioFile: null,
             posterFile: null,
-            posterUrl: ''
+            posterUrl: '',
+            artistImageFile: null,
+            artistImageUrl: ''
           });
           setMessage({ text: '', type: '' });
         }, 3000);
@@ -295,20 +319,85 @@ export default function UploadPage() {
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>Genre</label>
-            <select
-              name="genreId"
-              value={formData.genreId}
+            <label htmlFor="artistName" className={styles.label}>Artist Name (optional)</label>
+            <input
+              type="text"
+              id="artistName"
+              name="artistName"
+              value={formData.artistName}
               onChange={handleChange}
-              className={styles.select}
-            >
-              <option value="">Select a genre (optional)</option>
-              {genres.map((genre) => (
-                <option key={genre.id} value={genre.id}>
-                  {genre.name}
-                </option>
-              ))}
-            </select>
+              placeholder="Enter artist name"
+              className={styles.input}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Artist Profile Picture (optional)</label>
+            <div className={styles.toggleButtons}>
+              <button 
+                type="button"
+                className={artistImageMode === 'file' ? styles.toggleActive : styles.toggleInactive}
+                onClick={() => setArtistImageMode('file')}
+              >
+                Upload File
+              </button>
+              <button
+                type="button"
+                className={artistImageMode === 'url' ? styles.toggleActive : styles.toggleInactive}
+                onClick={() => setArtistImageMode('url')}
+              >
+                Enter URL
+              </button>
+            </div>
+            {artistImageMode === 'file' ? (
+              <div className={styles.fileUploadArea}>
+                <input
+                  type="file"
+                  name="artistImageFile"
+                  accept="image/jpeg,image/jpg,image/png,image/webp"
+                  onChange={handleFileChange}
+                  className={styles.fileInput}
+                  id="artist-image-upload"
+                />
+                <label htmlFor="artist-image-upload" className={styles.fileUploadLabel}>
+                  <div className={styles.fileIcon}>👤</div>
+                  <p className={styles.fileText}>
+                    {formData.artistImageFile ? formData.artistImageFile.name : 'Click to upload artist profile picture'}
+                  </p>
+                  <p className={styles.fileHint}>JPG, PNG, or WebP</p>
+                </label>
+              </div>
+            ) : (
+              <input
+                type="url"
+                name="artistImageUrl"
+                value={formData.artistImageUrl}
+                onChange={handleChange}
+                placeholder="https://example.com/artist-image.jpg"
+                className={styles.input}
+              />
+            )}
+          </div>
+
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Genre</label>
+            {genresLoading ? (
+              <div className={styles.loadingText}>Loading genres...</div>
+            ) : (
+              <select
+                name="genreId"
+                value={formData.genreId}
+                onChange={handleChange}
+                className={styles.select}
+              >
+                <option value="">Select a genre (optional)</option>
+                {genres.map((genre) => (
+                  <option key={genre.id} value={genre.id}>
+                    {genre.name}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           <div className={styles.formGroup}>

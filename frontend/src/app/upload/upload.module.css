@@ -75,6 +75,16 @@
   color: var(--text-primary);
 }
 
+.loadingText {
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 12px;
+  text-align: center;
+  background: var(--background);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
 .fileUploadArea {
   border: 2px dashed var(--border-color);
   border-radius: 8px;

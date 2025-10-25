@@ -16,6 +16,7 @@ interface Track {
   artists?: Array<{
     id: string;
     name: string;
+    imageUrl?: string;
   }>;
 }
 
@@ -43,14 +44,14 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolumeState] = useState(1);
+  const [volume, setVolumeState] = useState(0.15); // Default to 15% volume
   const [tracks, setTracks] = useState<Track[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Initialize audio element
   useEffect(() => {
     audioRef.current = new Audio();
-    audioRef.current.volume = volume;
+    audioRef.current.volume = 0.15; // Set default volume to 15%
 
     const audio = audioRef.current;
 
