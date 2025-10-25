@@ -32,6 +32,21 @@ namespace spotifyClone.DAL.Migrations
                     b.ToTable("ArtistTracks");
                 });
 
+            modelBuilder.Entity("PlaylistTracks", b =>
+                {
+                    b.Property<string>("PlaylistEntityId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TracksId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("PlaylistEntityId", "TracksId");
+
+                    b.HasIndex("TracksId");
+
+                    b.ToTable("PlaylistTracks");
+                });
+
             modelBuilder.Entity("spotifyClone.DAL.Entities.ArtistEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -79,6 +94,39 @@ namespace spotifyClone.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Genres");
+                });
+
+            modelBuilder.Entity("spotifyClone.DAL.Entities.PlaylistEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Playlists");
                 });
 
             modelBuilder.Entity("spotifyClone.DAL.Entities.TrackEntity", b =>
@@ -183,6 +231,32 @@ namespace spotifyClone.DAL.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PlaylistTracks", b =>
+                {
+                    b.HasOne("spotifyClone.DAL.Entities.PlaylistEntity", null)
+                        .WithMany()
+                        .HasForeignKey("PlaylistEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("spotifyClone.DAL.Entities.TrackEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TracksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("spotifyClone.DAL.Entities.PlaylistEntity", b =>
+                {
+                    b.HasOne("spotifyClone.DAL.Entities.UserEntity", "User")
+                        .WithMany("Playlists")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("spotifyClone.DAL.Entities.TrackEntity", b =>
                 {
                     b.HasOne("spotifyClone.DAL.Entities.GenreEntity", "Genre")
@@ -196,6 +270,11 @@ namespace spotifyClone.DAL.Migrations
             modelBuilder.Entity("spotifyClone.DAL.Entities.GenreEntity", b =>
                 {
                     b.Navigation("Tracks");
+                });
+
+            modelBuilder.Entity("spotifyClone.DAL.Entities.UserEntity", b =>
+                {
+                    b.Navigation("Playlists");
                 });
 #pragma warning restore 612, 618
         }

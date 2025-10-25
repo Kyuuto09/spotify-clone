@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using spotifyClone.DAL.Entities;
 using spotifyClone.DAL.Repositories.Track;
-using spotifyClone.DAL.Repositories.Artist;
 using spotifyClone.DTOs;
 
 namespace spotifyClone.Services
@@ -9,12 +8,10 @@ namespace spotifyClone.Services
     public class TrackService : ITrackService
     {
         private readonly ITrackRepository _trackRepository;
-        private readonly IArtistRepository _artistRepository;
 
-        public TrackService(ITrackRepository trackRepository, IArtistRepository artistRepository)
+        public TrackService(ITrackRepository trackRepository)
         {
             _trackRepository = trackRepository ?? throw new ArgumentNullException(nameof(trackRepository));
-            _artistRepository = artistRepository ?? throw new ArgumentNullException(nameof(artistRepository));
         }
 
         public async Task<IEnumerable<TrackDto>> GetAllTracksAsync()
@@ -137,26 +134,6 @@ namespace spotifyClone.Services
             return tracks.Select(MapToTrackDto);
         }
 
-        public async Task<ArtistEntity> GetOrCreateArtistAsync(string name, string? imageUrl)
-        {
-            // Check if artist already exists
-            var existingArtist = await _artistRepository.GetByNameAsync(name);
-            if (existingArtist != null)
-            {
-                // Update image URL if provided and different
-                if (!string.IsNullOrWhiteSpace(imageUrl) && existingArtist.ImageUrl != imageUrl)
-                {
-                    existingArtist.ImageUrl = imageUrl;
-                    await _artistRepository.UpdateAsync(existingArtist);
-                }
-                return existingArtist;
-            }
-
-            // Create new artist using the repository method
-            var newArtist = await _artistRepository.CreateArtistAsync(name, null, imageUrl, null);
-            return newArtist;
-        }
-
         // Mapping methods
         private static TrackDto MapToTrackDto(TrackEntity track)
         {
@@ -181,7 +158,7 @@ namespace spotifyClone.Services
                     Id = a.Id,
                     Name = a.Name,
                     Description = a.Description,
-                    ImageUrl = a.ImageUrl
+                    PosterUrl = a.ImageUrl
                 }).ToList() ?? new List<ArtistDto>()
             };
         }

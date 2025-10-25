@@ -237,9 +237,6 @@ namespace spotifyClone.Controllers
             [FromForm] IFormFile audioFile,
             [FromForm] IFormFile? posterFile,
             [FromForm] string? posterUrl,
-            [FromForm] IFormFile? artistImageFile,
-            [FromForm] string? artistImageUrl,
-            [FromForm] string? artistName,
             [FromForm] string? genreId,
             [FromForm] string? releaseDate)
         {
@@ -292,37 +289,6 @@ namespace spotifyClone.Controllers
                     finalPosterUrl = posterUrl;
                 }
 
-                // Handle artist image
-                string? finalArtistImageUrl = null;
-                if (artistImageFile != null && artistImageFile.Length > 0)
-                {
-                    var artistImageExtension = Path.GetExtension(artistImageFile.FileName).ToLowerInvariant();
-                    if (artistImageExtension == ".jpg" || artistImageExtension == ".jpeg" || artistImageExtension == ".png" || artistImageExtension == ".webp")
-                    {
-                        var artistImageFileName = $"{Guid.NewGuid()}{artistImageExtension}";
-                        var artistImagePath = Path.Combine("wwwroot", "artists", artistImageFileName);
-                        
-                        Directory.CreateDirectory(Path.Combine("wwwroot", "artists"));
-                        using (var stream = new FileStream(artistImagePath, FileMode.Create))
-                        {
-                            await artistImageFile.CopyToAsync(stream);
-                        }
-                        finalArtistImageUrl = $"/artists/{artistImageFileName}";
-                    }
-                }
-                else if (!string.IsNullOrWhiteSpace(artistImageUrl))
-                {
-                    finalArtistImageUrl = artistImageUrl;
-                }
-
-                // Create or get artist if provided
-                var artistIds = new List<string>();
-                if (!string.IsNullOrWhiteSpace(artistName))
-                {
-                    var artist = await _trackService.GetOrCreateArtistAsync(artistName, finalArtistImageUrl);
-                    artistIds.Add(artist.Id);
-                }
-
                 // Create track
                 var trackDto = new CreateTrackDto
                 {
@@ -332,7 +298,7 @@ namespace spotifyClone.Controllers
                     PosterUrl = finalPosterUrl,
                     GenreId = genreId,
                     ReleaseDate = !string.IsNullOrEmpty(releaseDate) ? DateTime.Parse(releaseDate) : DateTime.Now,
-                    ArtistIds = artistIds
+                    ArtistIds = new List<string>()
                 };
 
                 var track = await _trackService.CreateTrackAsync(trackDto);

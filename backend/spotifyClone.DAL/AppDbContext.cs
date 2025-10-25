@@ -12,6 +12,7 @@ namespace spotifyClone.DAL
         public DbSet<GenreEntity> Genres { get; set; }
         public DbSet<TrackEntity> Tracks { get; set; }
         public DbSet<UserEntity> Users { get; set; }
+        public DbSet<PlaylistEntity> Playlists { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -74,6 +75,28 @@ namespace spotifyClone.DAL
                 .IsRequired()
                 .HasMaxLength(50);
             });
+
+            // PlaylistEntity
+            builder.Entity<PlaylistEntity>(e =>
+            {
+                e.HasKey(p => p.Id);
+                e.Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+            });
+
+            // User-Playlist relationship
+            builder.Entity<PlaylistEntity>()
+                .HasOne(p => p.User)
+                .WithMany(u => u.Playlists)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Playlist-Track relationship (many-to-many)
+            builder.Entity<PlaylistEntity>()
+                .HasMany(p => p.Tracks)
+                .WithMany()
+                .UsingEntity("PlaylistTracks");
         }
     }
 }
