@@ -1,0 +1,121 @@
+.genresPage {
+  min-height: 100vh;
+  background: #000000;
+  color: #ffffff;
+  padding-top: 80px;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-bottom: 48px;
+}
+
+.container {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  color: #9ca3af;
+  font-size: 1.125rem;
+  margin-bottom: 32px;
+}
+
+.genresGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .genresGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .genresGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.genreCard {
+  background: #18181b;
+  border-radius: 8px;
+  padding: 24px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.genreCard:hover {
+  background: #27272a;
+}
+
+.genreCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.genreCard.rock::before {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.genreCard.pop::before {
+  background: linear-gradient(135deg, #ec4899, #db2777);
+}
+
+.genreCard.hiphop::before {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.genreCard.electronic::before {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.genreCard.jazz::before {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+}
+
+.genreCard.classical::before {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.genreCard.indie::before {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+}
+
+.genreCard.country::before {
+  background: linear-gradient(135deg, #eab308, #ca8a04);
+}
+
+.genreInitial {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.genreName {
+  font-size: 1.5rem;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}

@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import LoginForm from './auth/LoginForm';
 import SignupForm from './auth/SignupForm';
+import styles from './Navbar.module.css';
 
 export default function Navbar() {
   const [activeDropdown, setActiveDropdown] = useState<'login' | 'signup' | 'user' | null>(null);
@@ -21,31 +22,15 @@ export default function Navbar() {
   useEffect(() => {
     setIsMounted(true);
     
-    const checkAuth = () => {
-      if (typeof window !== 'undefined') {
-        const token = localStorage.getItem('auth_token');
-        const userData = localStorage.getItem('user');
-        
-        if (token && userData) {
-          setIsLoggedIn(true);
-          setUser(JSON.parse(userData));
-        }
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('auth_token');
+      const userData = localStorage.getItem('user');
+      
+      if (token && userData) {
+        setIsLoggedIn(true);
+        setUser(JSON.parse(userData));
       }
-    };
-    
-    // Check on mount
-    checkAuth();
-    
-    // Listen for login event
-    const handleLogin = () => {
-      checkAuth();
-    };
-    
-    window.addEventListener('userLoggedIn', handleLogin);
-    
-    return () => {
-      window.removeEventListener('userLoggedIn', handleLogin);
-    };
+    }
   }, []);
 
   // Logout function
@@ -171,48 +156,36 @@ export default function Navbar() {
   };
 
   return (
-    <nav 
-      ref={navRef}
-      style={{ 
-        position: 'fixed', 
-        top: 0, 
-        left: 0, 
-        right: 0, 
-        zIndex: 50, 
-        background: 'black'
-      }}>
-      <div style={{ 
-        maxWidth: '1400px', 
-        margin: '0 auto', 
-        padding: '0 40px',
-        width: '100%',
-        borderBottom: '1px solid #1F2937'
-      }}>
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between',
-          height: '80px',
-          width: '100%'
-        }}>
+    <>
+      {/* Overlay when dropdown is open */}
+      {activeDropdown && (
+        <div 
+          className={styles.overlay}
+          onClick={() => setActiveDropdown(null)}
+        />
+      )}
+
+      <nav ref={navRef} className={styles.navbar}>
+        <div className={styles.navContent}>
           {/* Logo */}
-          <Link 
-            ref={logoRef}
-            href="/" 
-            style={{ 
-              color: 'white', 
-              fontWeight: 'bold', 
-              fontSize: '20px',
-              letterSpacing: '-0.02em', 
-              flexShrink: 0,
-              textDecoration: 'none',
-              transition: 'color 0.2s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.color = '#D1D5DB'}
-            onMouseLeave={(e) => e.currentTarget.style.color = 'white'}
-          >
+          <Link ref={logoRef} href="/" className={styles.logoLink}>
             Spotify Clone
           </Link>
+
+          {/* Navigation Links (only show when logged in) */}
+          {isMounted && isLoggedIn && (
+            <div className={styles.navLinks}>
+              <Link href="/tracks" className={styles.navLink}>
+                All Tracks
+              </Link>
+              <Link href="/genres" className={styles.navLink}>
+                Genres
+              </Link>
+              <Link href="/upload" className={styles.navLink}>
+                Upload Track
+              </Link>
+            </div>
+          )}
 
           {/* Auth Buttons or User Menu */}
           <div 
@@ -220,172 +193,61 @@ export default function Navbar() {
               dropdownRef.current = el;
               buttonsRef.current = el;
             }}
-            style={{ display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', flexShrink: 0 }} 
+            className={styles.authButtons}
           >
             {!isMounted ? (
               /* Placeholder during SSR to prevent hydration mismatch */
               <>
-            <button
-              className="font-medium"
-              style={{ 
-                fontSize: '15px',
-                padding: '10px 24px',
-                background: 'transparent',
-                color: 'rgba(255,255,255,0.8)',
-                border: 'none',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                borderRadius: '4px',
-                visibility: 'hidden'
-              }}
-            >
-              Log in
-            </button>
-            <button
-              className="font-semibold"
-              style={{ 
-                fontSize: '15px',
-                padding: '12px 28px',
-                background: 'white',
-                color: 'black',
-                border: 'none',
-                borderRadius: '500px',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                visibility: 'hidden'
-              }}
-            >
-              Sign up
-            </button>
-            </>
+                <button className={`${styles.loginButton} ${styles.hiddenPlaceholder}`}>
+                  Log in
+                </button>
+                <button className={`${styles.signupButton} ${styles.hiddenPlaceholder}`}>
+                  Sign up
+                </button>
+              </>
             ) : isLoggedIn ? (
               /* User Menu */
               <button
                 onClick={() => toggleDropdown('user')}
-                className="font-medium"
-                style={{ 
-                  fontSize: '15px',
-                  padding: '10px 16px',
-                  background: 'rgba(255,255,255,0.1)',
-                  color: 'white',
-                  border: '1px solid rgba(255,255,255,0.2)',
-                  borderRadius: '50px',
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
-                }}
+                className={styles.userButton}
               >
-                <svg 
-                  width="20" 
-                  height="20" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2"
-                >
-                  <circle cx="12" cy="8" r="4"/>
-                  <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
-                </svg>
+                <div className={styles.userIcon}>
+                  {user?.firstName?.charAt(0) || 'U'}
+                </div>
                 {user?.firstName || 'User'}
               </button>
             ) : (
               /* Login/Signup Buttons */
               <>
-            <button
-              onClick={() => toggleDropdown('login')}
-              className="font-medium"
-              style={{ 
-                fontSize: '15px',
-                padding: '10px 24px',
-                background: 'transparent',
-                color: 'rgba(255,255,255,0.8)',
-                border: 'none',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                borderRadius: '4px'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = 'white';
-                e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
-                e.currentTarget.style.background = 'transparent';
-              }}
-            >
-              Log in
-            </button>
-            <button
-              onClick={() => toggleDropdown('signup')}
-              className="font-semibold"
-              style={{ 
-                fontSize: '15px',
-                padding: '12px 28px',
-                background: 'white',
-                color: 'black',
-                border: 'none',
-                borderRadius: '500px',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: '0 2px 8px rgba(255,255,255,0.1)'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.05)';
-                e.currentTarget.style.boxShadow = '0 4px 16px rgba(255,255,255,0.2)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(255,255,255,0.1)';
-              }}
-            >
-              Sign up
-            </button>
-            </>
+                <button
+                  onClick={() => toggleDropdown('login')}
+                  className={styles.loginButton}
+                >
+                  Log in
+                </button>
+                <button
+                  onClick={() => toggleDropdown('signup')}
+                  className={styles.signupButton}
+                >
+                  Sign up
+                </button>
+              </>
             )}
 
-            {/* Dropdown Panel */}
+            {/* Dropdown Panel for Login/Signup */}
             {activeDropdown && activeDropdown !== 'user' && (
-              <div 
-                ref={dropdownPanelRef}
-                className="absolute bg-black border border-gray-700"
-                style={{
-                  top: 'calc(100% + 20px)',
-                  right: '0',
-                  width: '700px',
-                  borderRadius: '12px',
-                  boxShadow: '0 20px 60px rgba(0,0,0,0.8)',
-                  zIndex: 100
-                }}
-              >
-                {/* Arrow pointing up */}
-                <div 
-                  style={{
-                    position: 'absolute',
-                    top: '-8px',
-                    right: activeDropdown === 'signup' ? '52px' : '20px',
-                    width: '0',
-                    height: '0',
-                    borderLeft: '8px solid transparent',
-                    borderRight: '8px solid transparent',
-                    borderBottom: '8px solid #374151'
-                  }}
-                />
-
-                <div style={{ padding: '32px' }}>
+              <div ref={dropdownPanelRef} className={styles.dropdown}>
+                <div className={styles.dropdownHeader}>
+                  <h2 className={styles.dropdownHeaderTitle}>
+                    {activeDropdown === 'login' ? 'Welcome Back' : 'Join Spotify Clone'}
+                  </h2>
+                  <p className={styles.dropdownHeaderSubtitle}>
+                    {activeDropdown === 'login' 
+                      ? 'Log in to continue to your account' 
+                      : 'Create your account to get started'}
+                  </p>
+                </div>
+                <div className={styles.dropdownContent}>
                   {activeDropdown === 'login' ? (
                     <LoginForm onSuccess={() => setActiveDropdown(null)} />
                   ) : (
@@ -397,73 +259,25 @@ export default function Navbar() {
 
             {/* User Dropdown Menu */}
             {activeDropdown === 'user' && (
-              <div
-                ref={dropdownPanelRef}
-                className="absolute bg-black border border-gray-700"
-                style={{
-                  top: 'calc(100% + 20px)',
-                  right: '0',
-                  minWidth: '220px',
-                  borderRadius: '12px',
-                  boxShadow: '0 20px 60px rgba(0,0,0,0.8)',
-                  zIndex: 100
-                }}
-              >
-                {/* Arrow pointing up */}
-                <div 
-                  style={{
-                    position: 'absolute',
-                    top: '-8px',
-                    right: '20px',
-                    width: '0',
-                    height: '0',
-                    borderLeft: '8px solid transparent',
-                    borderRight: '8px solid transparent',
-                    borderBottom: '8px solid #374151'
-                  }}
-                />
-
-                <div style={{ padding: '16px' }}>
-                  {/* User Info */}
-                  <div style={{ 
-                    padding: '12px 16px', 
-                    borderBottom: '1px solid #374151',
-                    marginBottom: '8px'
-                  }}>
-                    <div style={{ color: 'white', fontWeight: '600', fontSize: '15px' }}>
-                      {user?.firstName} {user?.lastName}
+              <div ref={dropdownPanelRef} className={styles.dropdown}>
+                <div className={styles.userMenuContent}>
+                  <div className={styles.userInfo}>
+                    <div className={styles.userInfoAvatar}>
+                      {user?.firstName?.charAt(0) || 'U'}
                     </div>
-                    <div style={{ color: '#9CA3AF', fontSize: '13px', marginTop: '4px' }}>
-                      {user?.email}
+                    <div className={styles.userInfoDetails}>
+                      <div className={styles.userInfoName}>
+                        {user?.firstName} {user?.lastName}
+                      </div>
+                      <div className={styles.userInfoEmail}>
+                        {user?.email}
+                      </div>
                     </div>
                   </div>
 
-                  {/* Logout Button */}
-                  <button
-                    onClick={handleLogout}
-                    style={{
-                      width: '100%',
-                      padding: '12px 16px',
-                      background: 'transparent',
-                      color: '#f87171',
-                      border: 'none',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      textAlign: 'left',
-                      transition: 'all 0.2s',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(248, 113, 113, 0.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent';
-                    }}
-                  >
+                  <div className={styles.menuDivider} />
+
+                  <button onClick={handleLogout} className={styles.logoutButton}>
                     <svg 
                       width="16" 
                       height="16" 
@@ -483,7 +297,7 @@ export default function Navbar() {
             )}
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 }

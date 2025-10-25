@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import { AudioPlayerProvider } from "@/contexts/AudioPlayerContext";
+import GlobalPlayer from "@/components/GlobalPlayer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,10 +31,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white min-h-screen`}
         suppressHydrationWarning={true}
       >
-        <Navbar />
-        <main style={{ paddingTop: '80px' }}>
+        <AudioPlayerProvider>
+          <Navbar />
           {children}
-        </main>
+          <GlobalPlayer />
+        </AudioPlayerProvider>
       </body>
     </html>
   );

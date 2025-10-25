@@ -230,5 +230,87 @@ namespace spotifyClone.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadTrackWithFile([FromForm] string title, 
+            [FromForm] string? description,
+            [FromForm] IFormFile audioFile,
+            [FromForm] IFormFile? posterFile,
+            [FromForm] string? posterUrl,
+            [FromForm] string? genreId,
+            [FromForm] string? releaseDate)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(title))
+                    return BadRequest("Track title is required");
+
+                if (audioFile == null || audioFile.Length == 0)
+                    return BadRequest("Audio file is required");
+
+                // Validate audio file
+                var audioExtension = Path.GetExtension(audioFile.FileName).ToLowerInvariant();
+                if (audioExtension != ".mp3" && audioExtension != ".wav" && audioExtension != ".flac")
+                    return BadRequest("Only MP3, WAV, and FLAC files are allowed");
+
+                // Create unique filenames
+                var audioFileName = $"{Guid.NewGuid()}{audioExtension}";
+                var audioPath = Path.Combine("wwwroot", "songs", audioFileName);
+                
+                // Save audio file
+                Directory.CreateDirectory(Path.Combine("wwwroot", "songs"));
+                using (var stream = new FileStream(audioPath, FileMode.Create))
+                {
+                    await audioFile.CopyToAsync(stream);
+                }
+
+                string? finalPosterUrl = null;
+                
+                // Handle poster - prioritize file upload over URL
+                if (posterFile != null && posterFile.Length > 0)
+                {
+                    var posterExtension = Path.GetExtension(posterFile.FileName).ToLowerInvariant();
+                    if (posterExtension == ".jpg" || posterExtension == ".jpeg" || posterExtension == ".png" || posterExtension == ".webp")
+                    {
+                        var posterFileName = $"{Guid.NewGuid()}{posterExtension}";
+                        var posterPath = Path.Combine("wwwroot", "images", posterFileName);
+                        
+                        Directory.CreateDirectory(Path.Combine("wwwroot", "images"));
+                        using (var stream = new FileStream(posterPath, FileMode.Create))
+                        {
+                            await posterFile.CopyToAsync(stream);
+                        }
+                        finalPosterUrl = $"/images/{posterFileName}";
+                    }
+                }
+                else if (!string.IsNullOrWhiteSpace(posterUrl))
+                {
+                    // Use provided URL if no file was uploaded
+                    finalPosterUrl = posterUrl;
+                }
+
+                // Create track
+                var trackDto = new CreateTrackDto
+                {
+                    Title = title,
+                    Description = description,
+                    AudioUrl = $"/songs/{audioFileName}",
+                    PosterUrl = finalPosterUrl,
+                    GenreId = genreId,
+                    ReleaseDate = !string.IsNullOrEmpty(releaseDate) ? DateTime.Parse(releaseDate) : DateTime.Now,
+                    ArtistIds = new List<string>()
+                };
+
+                var track = await _trackService.CreateTrackAsync(trackDto);
+                return Ok(new { 
+                    message = "Track uploaded successfully", 
+                    track = track 
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

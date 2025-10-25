@@ -1,0 +1,331 @@
+.homepage {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #000000, #0a1628, #000000);
+  overflow: visible;
+}
+
+.heroSection {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 0 24px;
+  overflow: visible;
+}
+
+.heroContent {
+  text-align: center;
+  max-width: 1152px;
+  margin: 0 auto;
+  z-index: 10;
+  overflow: visible;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 32px;
+  color: #ffffff;
+  text-align: center;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  word-break: keep-all;
+  white-space: nowrap;
+}
+
+/* Gradient text for desktop only - causes issues on mobile with 3D transforms */
+@media (min-width: 768px) {
+  .title {
+    background: linear-gradient(to right, #ffffff, #f3f4f6, #9ca3af);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+}
+
+.title span {
+  display: inline-block;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 6rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .title {
+    font-size: 8rem;
+  }
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  line-height: 1.625;
+  text-align: center;
+  max-width: 896px;
+  margin: 0 auto;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  overflow: visible;
+  font-weight: 400;
+}
+
+.subtitle span {
+  display: inline-block;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+@media (min-width: 768px) {
+  .subtitle {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .subtitle {
+    font-size: 1.875rem;
+  }
+}
+
+/* Author Credit Styles - Advanced Design */
+.authorCredit {
+  margin-top: 48px;
+  opacity: 0;
+  animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 2.5s forwards;
+}
+
+.authorBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.03) 0%, 
+    rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.authorBadge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 100px;
+  padding: 1px;
+  background: linear-gradient(135deg, 
+    rgba(168, 85, 247, 0.4), 
+    rgba(236, 72, 153, 0.4), 
+    rgba(59, 130, 246, 0.4));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.authorBadge:hover {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.08) 0%, 
+    rgba(255, 255, 255, 0.03) 100%);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 32px rgba(168, 85, 247, 0.15),
+              0 4px 16px rgba(236, 72, 153, 0.1);
+}
+
+.authorBadge:hover::before {
+  opacity: 1;
+}
+
+.craftedText,
+.byText {
+  font-size: 0.875rem;
+  color: rgba(156, 163, 175, 0.7);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+@media (min-width: 768px) {
+  .craftedText,
+  .byText {
+    font-size: 0.9375rem;
+  }
+}
+
+.heartEmoji {
+  display: inline-flex;
+  font-size: 1.1em;
+  animation: heartPulse 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.4));
+}
+
+@keyframes heartPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.4));
+  }
+  10% {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 12px rgba(236, 72, 153, 0.6));
+  }
+  20% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.4));
+  }
+}
+
+.authorLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.authorName {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  background: linear-gradient(135deg, #a855f7, #ec4899, #3b82f6);
+  background-size: 200% 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 8s ease infinite;
+  letter-spacing: 0.02em;
+}
+
+@media (min-width: 768px) {
+  .authorName {
+    font-size: 1rem;
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.externalIcon {
+  opacity: 0;
+  transform: translate(-4px, 4px) scale(0.8);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: rgba(168, 85, 247, 0.8);
+}
+
+.authorLink:hover .externalIcon {
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+}
+
+.authorLink:hover .authorName {
+  animation-duration: 2s;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.floatingElements {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.dot {
+  position: absolute;
+  border-radius: 9999px;
+}
+
+.dot1 {
+  top: 25%;
+  left: 8.33%;
+  width: 12px;
+  height: 12px;
+  background: rgba(74, 222, 128, 0.6);
+}
+
+.dot2 {
+  top: 33.33%;
+  right: 8.33%;
+  width: 16px;
+  height: 16px;
+  background: rgba(192, 132, 252, 0.6);
+}
+
+.dot3 {
+  bottom: 25%;
+  left: 16.67%;
+  width: 8px;
+  height: 8px;
+  background: rgba(96, 165, 250, 0.6);
+}
+
+.dot4 {
+  bottom: 33.33%;
+  right: 16.67%;
+  width: 12px;
+  height: 12px;
+  background: rgba(244, 114, 182, 0.6);
+}
+
+.dot5 {
+  top: 50%;
+  left: 33.33%;
+  width: 4px;
+  height: 4px;
+  background: rgba(250, 204, 21, 0.6);
+}
+
+.dot6 {
+  top: 75%;
+  right: 25%;
+  width: 8px;
+  height: 8px;
+  background: rgba(34, 211, 238, 0.6);
+}
+
+.dot7 {
+  top: 66.67%;
+  left: 25%;
+  width: 8px;
+  height: 8px;
+  background: rgba(251, 146, 60, 0.6);
+}
+
+.dot8 {
+  top: 16.67%;
+  right: 66.67%;
+  width: 4px;
+  height: 4px;
+  background: rgba(248, 113, 113, 0.6);
+}

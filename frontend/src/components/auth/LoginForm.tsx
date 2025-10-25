@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import confetti from 'canvas-confetti';
+import styles from './auth.module.css';
 
 interface LoginFormProps {
   onSuccess: () => void;
@@ -14,6 +16,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,13 +41,58 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
           localStorage.setItem('user', JSON.stringify(data.user));
         }
         
-        // Dispatch custom event to notify page of login
-        window.dispatchEvent(new Event('userLoggedIn'));
+        // Trigger smooth confetti from button location
+        if (buttonRef.current) {
+          const rect = buttonRef.current.getBoundingClientRect();
+          const x = (rect.left + rect.width / 2) / window.innerWidth;
+          const y = (rect.top + rect.height / 2) / window.innerHeight;
+          
+          // Multiple bursts for smoother effect
+          const count = 100;
+          const defaults = {
+            origin: { x, y },
+            colors: ['#ffffff', '#a1a1a1', '#737373', '#525252'],
+            scalar: 1,
+            gravity: 0.8,
+            drift: 0.1,
+            ticks: 200,
+            decay: 0.94
+          };
+
+          // First burst - wider spread
+          confetti({
+            ...defaults,
+            particleCount: count * 0.4,
+            spread: 100,
+            startVelocity: 35
+          });
+
+          // Second burst - focused
+          setTimeout(() => {
+            confetti({
+              ...defaults,
+              particleCount: count * 0.3,
+              spread: 60,
+              startVelocity: 30
+            });
+          }, 100);
+
+          // Third burst - upward
+          setTimeout(() => {
+            confetti({
+              ...defaults,
+              particleCount: count * 0.3,
+              spread: 120,
+              startVelocity: 25,
+              angle: 60
+            });
+          }, 200);
+        }
         
         setTimeout(() => {
           onSuccess();
-          // Don't reload - let the animation handle the transition
-        }, 500);
+          window.location.href = '/dashboard';
+        }, 1000);
       } else {
         setMessage(data.message || 'Login failed. Please check your credentials.');
       }
@@ -64,13 +112,13 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
+    <div className={styles.authContainer}>
       {/* Left Side - Form */}
-      <div>
-        <h2 className="text-white font-bold mb-4" style={{ fontSize: '24px' }}>Sign In</h2>
+      <div className={styles.formSection}>
+        <h2 className={styles.title}>Sign In</h2>
         
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.inputGroup}>
             <input
               type="email"
               name="email"
@@ -79,28 +127,11 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
               placeholder="Email Address"
               required
               autoComplete="off"
-              style={{
-                width: '100%',
-                padding: '14px 0',
-                background: 'transparent',
-                borderTop: 'none',
-                borderLeft: 'none',
-                borderRight: 'none',
-                borderBottom: '1px solid #4B5563',
-                color: 'white',
-                fontSize: '15px',
-                outline: 'none',
-                transition: 'border-color 0.3s ease'
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderBottomColor = 'white';
-                e.currentTarget.setAttribute('autocomplete', 'off');
-              }}
-              onBlur={(e) => e.currentTarget.style.borderBottomColor = '#4B5563'}
+              className={styles.input}
             />
           </div>
 
-          <div>
+          <div className={styles.inputGroup}>
             <input
               type="password"
               name="password"
@@ -109,86 +140,30 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
               placeholder="Password"
               required
               autoComplete="new-password"
-              style={{
-                width: '100%',
-                padding: '14px 0',
-                background: 'transparent',
-                borderTop: 'none',
-                borderLeft: 'none',
-                borderRight: 'none',
-                borderBottom: '1px solid #4B5563',
-                color: 'white',
-                fontSize: '15px',
-                outline: 'none',
-                transition: 'border-color 0.3s ease'
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderBottomColor = 'white';
-                e.currentTarget.setAttribute('autocomplete', 'new-password');
-              }}
-              onBlur={(e) => e.currentTarget.style.borderBottomColor = '#4B5563'}
+              className={styles.input}
             />
           </div>
 
-          <div style={{ marginTop: '8px' }}>
+          <div className={styles.buttonGroup}>
             <button
+              ref={buttonRef}
               type="submit"
               disabled={isLoading}
-              className="font-semibold transition-all duration-200"
-              style={{
-                fontSize: '15px',
-                padding: '10px 28px',
-                background: 'transparent',
-                color: 'white',
-                border: '2px solid white',
-                borderRadius: '500px',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                opacity: isLoading ? 0.6 : 1
-              }}
-              onMouseEnter={(e) => {
-                if (!isLoading) {
-                  e.currentTarget.style.background = 'white';
-                  e.currentTarget.style.color = 'black';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent';
-                e.currentTarget.style.color = 'white';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
+              className={styles.submitButton}
             >
               {isLoading ? 'Signing in...' : 'Login'}
               {!isLoading && <span>→</span>}
             </button>
           </div>
 
-          <div style={{ marginTop: '4px' }}>
-            <button 
-              type="button" 
-              className="text-gray-400 hover:text-white transition-colors"
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                cursor: 'pointer',
-                fontSize: '14px',
-                padding: '0'
-              }}
-            >
+          <div>
+            <button type="button" className={styles.forgotPassword}>
               Forgot your password?
             </button>
           </div>
 
           {message && (
-            <div style={{ 
-              fontSize: '14px',
-              color: message.includes('successful') ? '#4ade80' : '#f87171',
-              marginTop: '8px'
-            }}>
+            <div className={`${styles.message} ${message.includes('successful') ? styles.messageSuccess : styles.messageError}`}>
               {message}
             </div>
           )}
@@ -196,19 +171,19 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
       </div>
 
       {/* Right Side - Info */}
-      <div style={{ borderLeft: '1px solid #374151', paddingLeft: '40px' }}>
-        <h3 className="text-white font-semibold mb-3" style={{ fontSize: '18px' }}>Why sign in?</h3>
-        <ul style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '15px', color: '#9CA3AF' }}>
-          <li style={{ display: 'flex', alignItems: 'flex-start' }}>
-            <span style={{ marginRight: '12px' }}>✱</span>
+      <div className={styles.infoSection}>
+        <h3 className={styles.infoTitle}>Why sign in?</h3>
+        <ul className={styles.benefitsList}>
+          <li className={styles.benefitItem}>
+            <span className={styles.benefitIcon}>✱</span>
             <span>Access your saved playlists</span>
           </li>
-          <li style={{ display: 'flex', alignItems: 'flex-start' }}>
-            <span style={{ marginRight: '12px' }}>✱</span>
+          <li className={styles.benefitItem}>
+            <span className={styles.benefitIcon}>✱</span>
             <span>Stream unlimited music</span>
           </li>
-          <li style={{ display: 'flex', alignItems: 'flex-start' }}>
-            <span style={{ marginRight: '12px' }}>✱</span>
+          <li className={styles.benefitItem}>
+            <span className={styles.benefitIcon}>✱</span>
             <span>Personalized recommendations</span>
           </li>
         </ul>

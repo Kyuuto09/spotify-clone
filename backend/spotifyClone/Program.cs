@@ -86,6 +86,20 @@ if (app.Environment.IsDevelopment())
 // Enable CORS
 app.UseCors("AllowReactApp");
 
+// Enable static files from wwwroot
+app.UseStaticFiles();
+
+// Configure static files for uploads directory (legacy)
+var uploadsPath = Path.Combine(builder.Environment.WebRootPath ?? builder.Environment.ContentRootPath, "uploads");
+if (Directory.Exists(uploadsPath))
+{
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadsPath),
+        RequestPath = "/uploads"
+    });
+}
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
