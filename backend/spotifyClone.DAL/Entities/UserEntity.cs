@@ -11,8 +11,5 @@ namespace spotifyClone.DAL.Entities
         public bool IsEmailConfirmed { get; set; } = false;
         public string? EmailConfirmationToken { get; set; }
         public DateTime? LastLoginDate { get; set; }
-        
-        // Navigation properties
-        public ICollection<PlaylistEntity> Playlists { get; set; } = [];
     }
 }

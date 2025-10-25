@@ -52,6 +52,14 @@ export default function GlobalPlayer() {
 
   return (
     <div className={styles.globalPlayer}>
+      {/* Progress Bar at Top */}
+      <div className={styles.topProgressBar} onClick={handleProgressClick}>
+        <div
+          className={styles.topProgressFill}
+          style={{ width: `${(currentTime / duration) * 100 || 0}%` }}
+        />
+      </div>
+
       <div className={styles.playerContent}>
         {/* Track Info */}
         <div className={styles.trackInfo}>
@@ -75,45 +83,44 @@ export default function GlobalPlayer() {
               </div>
             )}
           </div>
+          <div className={styles.timeDisplay}>
+            <span className={styles.timeText}>{formatTime(currentTime)}</span>
+            <span className={styles.timeSeparator}>/</span>
+            <span className={styles.timeText}>{formatTime(duration)}</span>
+          </div>
         </div>
 
         {/* Playback Controls */}
         <div className={styles.controls}>
-          <button
-            className={styles.skipButton}
-            onClick={skipPrevious}
-            disabled={!canGoPrevious}
-            aria-label="Previous track"
-          >
-            ⏮
-          </button>
-          <button
-            className={styles.playButton}
-            onClick={togglePlayPause}
-            aria-label={isPlaying ? 'Pause' : 'Play'}
-          >
-            {isPlaying ? '⏸' : '▶'}
-          </button>
-          <button
-            className={styles.skipButton}
-            onClick={skipNext}
-            disabled={!canGoNext}
-            aria-label="Next track"
-          >
-            ⏭
-          </button>
+          <div className={styles.controlButtons}>
+            <button
+              className={styles.skipButton}
+              onClick={skipPrevious}
+              disabled={!canGoPrevious}
+              aria-label="Previous track"
+            >
+              ⏮
+            </button>
+            <button
+              className={styles.playButton}
+              onClick={togglePlayPause}
+              aria-label={isPlaying ? 'Pause' : 'Play'}
+            >
+              {isPlaying ? '⏸' : '▶'}
+            </button>
+            <button
+              className={styles.skipButton}
+              onClick={skipNext}
+              disabled={!canGoNext}
+              aria-label="Next track"
+            >
+              ⏭
+            </button>
+          </div>
         </div>
 
         {/* Progress & Volume */}
-        <div className={styles.progressSection}>
-          <span className={styles.time}>{formatTime(currentTime)}</span>
-          <div className={styles.progressBar} onClick={handleProgressClick}>
-            <div
-              className={styles.progressFill}
-              style={{ width: `${(currentTime / duration) * 100 || 0}%` }}
-            />
-          </div>
-          <span className={styles.time}>{formatTime(duration)}</span>
+        <div className={styles.volumeSection}>
           <div className={styles.volumeControl}>
             <span className={styles.volumeIcon} onClick={toggleMute}>
               {volume === 0 ? '🔇' : volume < 0.5 ? '🔉' : '🔊'}

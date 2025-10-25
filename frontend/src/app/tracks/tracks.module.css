@@ -154,12 +154,38 @@
   z-index: 10;
 }
 
-.trackCard:hover .deleteButton {
+.editButton {
+  position: absolute;
+  top: 8px;
+  right: 48px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.9);
+  border: none;
+  color: #ffffff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.trackCard:hover .deleteButton,
+.trackCard:hover .editButton {
   opacity: 1;
 }
 
 .deleteButton:hover {
   background: rgb(239, 68, 68);
+  transform: scale(1.1);
+}
+
+.editButton:hover {
+  background: rgb(59, 130, 246);
   transform: scale(1.1);
 }
 
@@ -183,6 +209,37 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   min-height: 42px;
+}
+
+.artistInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.artistImage {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+}
+
+.artistImagePlaceholder {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  opacity: 0.6;
 }
 
 .artistName {

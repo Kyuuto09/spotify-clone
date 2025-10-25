@@ -1,4 +1,5 @@
 using spotifyClone.DTOs;
+using spotifyClone.DAL.Entities;
 
 namespace spotifyClone.Services
 {
@@ -15,5 +16,6 @@ namespace spotifyClone.Services
         Task<bool> AddArtistToTrackAsync(string trackId, string artistId);
         Task<bool> RemoveArtistFromTrackAsync(string trackId, string artistId);
         Task<IEnumerable<TrackDto>> SearchTracksByTitleAsync(string searchTerm);
+        Task<ArtistEntity> GetOrCreateArtistAsync(string name, string? imageUrl);
     }
 }

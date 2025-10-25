@@ -7,6 +7,19 @@ namespace spotifyClone.DAL.Repositories.Track
     {
         public TrackRepository(AppDbContext context) : base(context) { }
 
+        // Override GetByIdAsync to include related entities
+        public override async Task<TrackEntity?> GetByIdAsync(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return null;
+
+            return await _dbSet
+                .AsNoTracking()
+                .Include(t => t.Genre)
+                .Include(t => t.Artists)
+                .FirstOrDefaultAsync(e => e.Id == id);
+        }
+
         // Основні методи згідно завдання
         public List<TrackEntity> GetByTitle(string title)
         {

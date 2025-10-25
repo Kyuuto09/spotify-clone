@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAudioPlayer } from '@/contexts/AudioPlayerContext';
+import ConfirmModal from '@/components/ConfirmModal';
 import styles from './tracks.module.css';
 
 interface Track {
@@ -18,12 +19,18 @@ interface Track {
   artists?: Array<{
     id: string;
     name: string;
+    imageUrl?: string;
   }>;
 }
 
 export default function TracksPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; trackId: string | null; trackTitle: string }>({
+    isOpen: false,
+    trackId: null,
+    trackTitle: ''
+  });
   
   const {
     currentTrack,
@@ -54,15 +61,16 @@ export default function TracksPage() {
     fetchTracks();
   }, [setTracks]);
 
-  const handleDelete = async (trackId: string, event: React.MouseEvent) => {
+  const handleDelete = async (trackId: string, trackTitle: string, event: React.MouseEvent) => {
     event.stopPropagation();
-    
-    if (!confirm('Are you sure you want to delete this track?')) {
-      return;
-    }
+    setDeleteModal({ isOpen: true, trackId, trackTitle });
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteModal.trackId) return;
 
     try {
-      const response = await fetch(`http://localhost:5001/api/track/${trackId}`, {
+      const response = await fetch(`http://localhost:5001/api/track/${deleteModal.trackId}`, {
         method: 'DELETE',
       });
 
@@ -70,11 +78,23 @@ export default function TracksPage() {
         throw new Error('Failed to delete track');
       }
 
-      removeTrack(trackId);
+      removeTrack(deleteModal.trackId);
+      setDeleteModal({ isOpen: false, trackId: null, trackTitle: '' });
     } catch (err) {
       console.error('Failed to delete track:', err);
       alert('Failed to delete track. Please try again.');
+      setDeleteModal({ isOpen: false, trackId: null, trackTitle: '' });
     }
+  };
+
+  const cancelDelete = () => {
+    setDeleteModal({ isOpen: false, trackId: null, trackTitle: '' });
+  };
+
+  const handleEdit = (trackId: string, event: React.MouseEvent) => {
+    event.stopPropagation();
+    // TODO: Navigate to edit page or open edit modal
+    alert(`Edit functionality coming soon for track: ${trackId}`);
   };
 
   if (loading) {
@@ -125,8 +145,15 @@ export default function TracksPage() {
                   className={`${styles.trackCard} ${isCurrentTrack ? styles.activeTrack : ''}`}
                 >
                   <button
+                    className={styles.editButton}
+                    onClick={(e) => handleEdit(track.id, e)}
+                    aria-label="Edit track"
+                  >
+                    ✎
+                  </button>
+                  <button
                     className={styles.deleteButton}
-                    onClick={(e) => handleDelete(track.id, e)}
+                    onClick={(e) => handleDelete(track.id, track.title, e)}
                     aria-label="Delete track"
                   >
                     ✕
@@ -158,9 +185,24 @@ export default function TracksPage() {
                   <div className={styles.trackInfo}>
                     <h3 className={styles.trackTitle}>{track.title}</h3>
                     {track.artists && track.artists.length > 0 && (
-                      <p className={styles.artistName}>
-                        {track.artists.map(a => a.name).join(', ')}
-                      </p>
+                      <div className={styles.artistInfo}>
+                        {track.artists[0].imageUrl ? (
+                          <img 
+                            src={track.artists[0].imageUrl.startsWith('http') 
+                              ? track.artists[0].imageUrl 
+                              : `http://localhost:5001${track.artists[0].imageUrl}`}
+                            alt={track.artists[0].name}
+                            className={styles.artistImage}
+                          />
+                        ) : (
+                          <div className={styles.artistImagePlaceholder}>
+                            👤
+                          </div>
+                        )}
+                        <p className={styles.artistName}>
+                          {track.artists.map(a => a.name).join(', ')}
+                        </p>
+                      </div>
                     )}
                     {track.genre && (
                       <span className={styles.genreBadge}>{track.genre.name}</span>
@@ -172,6 +214,16 @@ export default function TracksPage() {
           </div>
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        title="Delete Track"
+        message={`Are you sure you want to delete "${deleteModal.trackTitle}"? This action cannot be undone.`}
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </main>
   );
 }
