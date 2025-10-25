@@ -1,4 +1,5 @@
 # Use the official .NET SDK image for building
+# Updated: 2025-10-25
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
