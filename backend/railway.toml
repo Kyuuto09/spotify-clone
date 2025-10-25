@@ -1,8 +1,8 @@
 [build]
-builder = "DOCKERFILE"
-dockerfilePath = "Dockerfile"
+builder = "dockerfile"
 
 [deploy]
 startCommand = "dotnet spotifyClone.dll"
 restartPolicyType = "always"
 healthcheckPath = "/health"
+healthcheckTimeout = 300
