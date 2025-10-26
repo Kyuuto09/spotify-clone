@@ -15,10 +15,26 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// Add dbcontext
+// Add dbcontext with PostgreSQL support (Railway compatible)
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres://"))
+{
+    // Parse Railway's DATABASE_URL format (postgres://user:password@host:port/database)
+    var uri = new Uri(connectionString);
+    var userInfo = uri.UserInfo.Split(':');
+    connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+}
+else
+{
+    // Fallback to local connection string
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+        ?? "Host=localhost;Database=spotifyClone;Username=postgres;Password=postgres";
+}
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultDb"));
+    options.UseNpgsql(connectionString);
 });
 
 // Add repositories
@@ -115,5 +131,12 @@ app.MapControllers();
 
 // Add health check endpoint for Railway
 app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }));
+
+// Auto-apply migrations on startup (for Railway deployment)
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 
 app.Run();
