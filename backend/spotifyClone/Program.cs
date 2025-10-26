@@ -15,6 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+// Configure AppContext to treat DateTimeKind.Unspecified as UTC for PostgreSQL
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 // Add dbcontext with PostgreSQL support (Railway compatible)
 var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
 
