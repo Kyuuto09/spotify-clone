@@ -38,7 +38,8 @@ export default function UploadPage() {
   const fetchGenres = async () => {
     try {
       setGenresLoading(true);
-      const response = await fetch('http://localhost:5001/api/genre');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+      const response = await fetch(`${apiUrl}/api/genre`);
       if (response.ok) {
         const data = await response.json();
         setGenres(data);
@@ -107,9 +108,10 @@ export default function UploadPage() {
       if (formData.genreId) formDataToSend.append('genreId', formData.genreId);
       if (formData.releaseDate) formDataToSend.append('releaseDate', formData.releaseDate);
 
-      console.log('Uploading to:', 'http://localhost:5001/api/track/upload');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+      console.log('Uploading to:', `${apiUrl}/api/track/upload`);
       
-      const response = await fetch('http://localhost:5001/api/track/upload', {
+      const response = await fetch(`${apiUrl}/api/track/upload`, {
         method: 'POST',
         body: formDataToSend
       });

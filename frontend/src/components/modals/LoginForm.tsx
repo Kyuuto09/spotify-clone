@@ -21,7 +21,8 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
     setMessage('');
 
     try {
-      const response = await fetch('http://localhost:5001/api/auth/login', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+      const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
