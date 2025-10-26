@@ -25,8 +25,4 @@ COPY --from=build /app/spotifyClone/out .
 # Create wwwroot directories if they don't exist
 RUN mkdir -p wwwroot/songs wwwroot/artists
 
-# Expose port (Railway will set PORT env variable)
-ENV ASPNETCORE_URLS=http://0.0.0.0:${PORT:-5001}
-EXPOSE ${PORT:-5001}
-
 ENTRYPOINT ["dotnet", "spotifyClone.dll"]
