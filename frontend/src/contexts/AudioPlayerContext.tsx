@@ -98,9 +98,10 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   const playTrack = (track: Track) => {
     if (!audioRef.current) return;
 
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
     const audioUrl = track.audioUrl.startsWith('http')
       ? track.audioUrl
-      : `http://localhost:5001${track.audioUrl}`;
+      : `${apiUrl}${track.audioUrl}`;
 
     if (currentTrack?.id === track.id) {
       // Same track - toggle play/pause
