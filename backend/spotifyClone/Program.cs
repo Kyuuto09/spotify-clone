@@ -21,7 +21,7 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 // Add dbcontext with PostgreSQL support (Railway compatible)
 var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
 
-if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres://"))
+if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgresql://"))
 {
     // Parse Railway's DATABASE_URL format (postgres://user:password@host:port/database)
     var uri = new Uri(connectionString);
